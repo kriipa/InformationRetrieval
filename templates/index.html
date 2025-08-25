@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kripa Scholar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Google+Sans:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+      }
+      .google-logo-scholar {
+        font-family: "Google Sans", sans-serif;
+        font-weight: 500;
+        letter-spacing: -0.5px;
+      }
+      .google-logo-scholar .g {
+        color: #4285f4;
+      }
+      .google-logo-scholar .o1 {
+        color: #ea4335;
+      }
+      .google-logo-scholar .o2 {
+        color: #fbbc05;
+      }
+      .google-logo-scholar .l {
+        color: #34a853;
+      }
+      .google-logo-scholar .scholar {
+        color: #757575;
+      }
+      .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .page-link {
+        background: none;
+        border: none;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
+        text-decoration: underline;
+        color: #3b82f6;
+      }
+      .page-link:hover {
+        text-decoration: none;
+      }
+      .page-link.active {
+        font-weight: bold;
+        text-decoration: none;
+        color: #1f2937;
+      }
+    </style>
+  </head>
+
+  <body class="bg-white text-gray-800">
+    {% if results is none %}
+    <div
+      id="search-page"
+      class="flex flex-col items-center justify-center min-h-screen"
+    >
+      <div class="text-center">
+        <h1 class="google-logo-scholar text-8xl md:text-9xl mb-6">
+          <span class="g">K</span><span class="o1">r</span
+          ><span class="o2">i</span><span class="g">i</span
+          ><span class="l">p</span><span class="o1">a</span>
+          <span class="scholar font-normal">Scholar</span>
+        </h1>
+
+        <!-- changed to GET /search and input name 'q' -->
+        <form
+          id="main-search-form"
+          action="/search"
+          method="get"
+          class="max-w-2xl mx-auto"
+        >
+          <div class="relative">
+            <input
+              type="text"
+              name="q"
+              value="{{ query or '' }}"
+              class="w-full border border-gray-300 rounded-full py-3 px-6 text-lg focus:outline-none focus:ring-2 focus:ring-blue-200 shadow-md hover:shadow-lg transition-shadow"
+              placeholder="Search publications..."
+            />
+            <button
+              type="submit"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-600"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-8 w-8"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                />
+              </svg>
+            </button>
+          </div>
+        </form>
+
+        <p class="mt-8 text-lg text-green-700">
+          Search for the publications & papers.
+        </p>
+      </div>
+    </div>
+
+    {% else %}
+    <div id="results-page">
+      <header
+        class="border-b border-gray-200 py-4 px-4 md:px-6 sticky top-0 bg-white z-10"
+      >
+        <div class="flex items-center">
+          <a href="/" class="google-logo-scholar text-2xl mr-6 flex-shrink-0">
+            <span class="g">K</span><span class="o1">r</span
+            ><span class="o2">i</span><span class="g">i</span
+            ><span class="l">p</span><span class="o1">a</span>
+            <span class="scholar font-normal">Scholar</span>
+          </a>
+
+          <!-- header search uses GET /search and q as parameter -->
+          <form
+            id="header-search-form"
+            action="/search"
+            method="get"
+            class="w-full max-w-2xl"
+          >
+            <div class="relative">
+              <input
+                type="text"
+                name="q"
+                value="{{ query or '' }}"
+                class="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-200 shadow-sm"
+                placeholder="Search publications..."
+              />
+              <button
+                type="submit"
+                class="absolute right-0 top-0 h-full px-4 text-white bg-blue-600 rounded-r-md hover:bg-blue-700"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </form>
+        </div>
+      </header>
+
+      <div class="container mx-auto px-4 md:px-6 py-6">
+        <div class="flex flex-col md:flex-row">
+          <aside class="w-full md:w-1/4 lg:w-1/5 pr-0 md:pr-8 mb-8 md:mb-0">
+            <h3 class="text-lg font-medium mb-4">Articles</h3>
+            <div class="space-y-4 text-sm">
+              <!-- filter UI left as-is -->
+              <div>
+                <a href="#" class="block font-bold">Any time</a>
+                <a href="#" class="block pl-3">Until 2025</a>
+              </div>
+            </div>
+          </aside>
+
+          <main class="w-full md:w-3/4 lg:w-4/5">
+            {% if results %}
+            <p class="text-sm text-gray-500 mb-4">
+              Showing results for <strong>{{ query }}</strong>
+            </p>
+            <div id="results-container" class="space-y-6">
+              {% for result in results %}
+              <div class="bg-white p-4 rounded-md shadow-sm">
+                <h3 class="text-xl font-medium">
+                  <a
+                    href="{{ result.title_link or '#' }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-blue-800 hover:underline visited:text-purple-600"
+                  >
+                    {{ result.title or 'Untitled' }}
+                  </a>
+                </h3>
+
+                <p class="text-sm text-green-700">
+                  {% if result.authors %} {% for author in result.authors %} {%
+                  if author.link and author.link != 'N/A' %}
+                  <a
+                    href="{{ author.link }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="mr-2 text-sm text-blue-600 hover:underline"
+                    >{{ author.name }}</a
+                  >{% if not loop.last %},{% endif %} {% else %}
+                  <span class="mr-2">{{ author.name }}</span>{% if not loop.last
+                  %},{% endif %} {% endif %} {% endfor %} {% endif %} {% if
+                  result.published_date %} - {{ result.published_date }} {%
+                  endif %}
+                </p>
+
+                {% if result.abstract %}
+                <p class="text-sm text-gray-600 mt-1 line-clamp-3">
+                  {{ result.abstract }}
+                </p>
+                {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-600">
+              No results found for <strong>{{ query }}</strong>.
+            </p>
+            <p class="text-gray-500 mt-2">Suggestions:</p>
+            <ul class="list-disc list-inside text-gray-500 mt-1 ml-4">
+              <li>Make sure all words are spelled correctly.</li>
+              <li>Try different keywords.</li>
+              <li>Try more general keywords.</li>
+            </ul>
+            {% endif %} {% if total_pages > 1 %}
+            <div class="flex justify-center items-center mt-8 space-x-2">
+              {% if page > 1 %}
+              <a
+                href="/search?q={{ query }}&page={{ page - 1 }}"
+                class="text-blue-600 hover:underline"
+                >&laquo; Previous</a
+              >
+              {% endif %} {% for p in range(1, total_pages + 1) %}
+              <a
+                href="/search?q={{ query }}&page={{ p }}"
+                class="page-link {% if p == page %}active{% endif %}"
+                >{{ p }}</a
+              >
+              {% endfor %} {% if page < total_pages %}
+              <a
+                href="/search?q={{ query }}&page={{ page + 1 }}"
+                class="text-blue-600 hover:underline"
+                >Next &raquo;</a
+              >
+              {% endif %}
+            </div>
+            {% endif %}
+          </main>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </body>
+</html>
