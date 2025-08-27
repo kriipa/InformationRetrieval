@@ -1,5 +1,5 @@
 # main.py
-from fastapi import FastAPI, Query, Request, BackgroundTasks
+from fastapi import FastAPI, Query, Request, BackgroundTasks, Body
 from fastapi.templating import Jinja2Templates
 from contextlib import asynccontextmanager
 import json
@@ -7,6 +7,7 @@ import math
 from crawler.crawler import run_scrape
 
 from engine.search_engine import SimpleSearchEngine 
+from engine.classifier_model import get_or_train_classifier
 
 # --- Global Variables & Lifespan Management ---
 templates = Jinja2Templates(directory="templates")
@@ -32,6 +33,15 @@ async def lifespan(app: FastAPI):
     ml_models["search_engine"] = engine
     
     print("✅ Search engine loaded successfully!")
+
+    # --- Load classifier model ---
+    try:
+        classifier = get_or_train_classifier(data_path='./data1/')
+        ml_models["classifier"] = classifier
+        print("✅ Classifier model loaded successfully!")
+    except Exception as e:
+        print(f"❌ Error loading classifier model: {e}")
+
     yield
     
     # This code runs when the server shuts down
@@ -124,3 +134,15 @@ def trigger_scrape(background_tasks: BackgroundTasks):
 
     background_tasks.add_task(scrape_and_index)
     return {"status": "Scrape and re-index started"}
+
+@app.post("/classify")
+async def classify_text(text: str = Body(..., embed=True)):
+    """
+    Classifies the input text and returns the predicted category.
+    Expects JSON: { "text": "your text here" }
+    """
+    classifier = ml_models.get("classifier")
+    if classifier is None:
+        return {"error": "Classifier model not loaded."}
+    predicted_category = classifier.predict([text])[0]
+    return {"text": text, "predicted_category": predicted_category}
