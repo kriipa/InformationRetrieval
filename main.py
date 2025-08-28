@@ -138,11 +138,25 @@ def trigger_scrape(background_tasks: BackgroundTasks):
 @app.post("/classify")
 async def classify_text(text: str = Body(..., embed=True)):
     """
-    Classifies the input text and returns the predicted category.
+    Classifies the input text and returns the predicted category with confidence scores.
     Expects JSON: { "text": "your text here" }
     """
     classifier = ml_models.get("classifier")
     if classifier is None:
         return {"error": "Classifier model not loaded."}
+
     predicted_category = classifier.predict([text])[0]
-    return {"text": text, "predicted_category": predicted_category}
+    prediction_probabilities = classifier.predict_proba([text])[0]
+
+    # Get class names from the classifier
+    class_names = classifier.classes_
+
+    # Create a dictionary of category -> probability
+    probabilities = {class_names[i]: round(float(prediction_probabilities[i]), 4)
+                    for i in range(len(class_names))}
+
+    return {
+        "text": text,
+        "predicted_category": predicted_category,
+        "prediction_scores": probabilities
+    }
