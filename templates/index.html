@@ -94,7 +94,6 @@
           </button>
         </div>
 
-        <!-- changed to GET /search and input name 'q' -->
         <form
           id="main-search-form"
           action="/search"
@@ -168,7 +167,6 @@
             </button>
           </div>
 
-          <!-- header search uses GET /search and q as parameter -->
           <form
             id="header-search-form"
             action="/search"
@@ -210,7 +208,6 @@
           <aside class="w-full md:w-1/4 lg:w-1/5 pr-0 md:pr-8 mb-8 md:mb-0">
             <h3 class="text-lg font-medium mb-4">Articles</h3>
             <div class="space-y-4 text-sm">
-              <!-- filter UI left as-is -->
               <div>
                 <a href="#" class="block font-bold">Any time</a>
                 <a href="#" class="block pl-3">Until 2025</a>
@@ -301,24 +298,20 @@
     {% endif %}
 
     <script>
-      // Mode switching functionality
       let currentMode = "search";
 
       function setMode(mode) {
         currentMode = mode;
 
-        // Get all relevant elements
         const mainInput = document.getElementById("main-input");
         const headerInput = document.getElementById("header-input");
         const mainForm = document.getElementById("main-search-form");
         const headerForm = document.getElementById("header-search-form");
         const descriptionEl = document.getElementById("page-description");
 
-        // Update Scholar/Classify buttons on main page
         const scholarBtn = document.getElementById("scholar-mode-btn");
         const classifyBtn = document.getElementById("classify-mode-btn");
 
-        // Update Scholar/Classify buttons on header
         const scholarHeaderBtn = document.getElementById(
           "scholar-mode-header-btn"
         );
@@ -326,9 +319,7 @@
           "classify-mode-header-btn"
         );
 
-        // Update button styles
         if (mode === "search") {
-          // Scholar active, Classify inactive
           if (scholarBtn) {
             scholarBtn.className =
               "text-lg font-medium text-blue-600 border-b-2 border-blue-600 transition-colors";
@@ -346,7 +337,6 @@
               "text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors";
           }
         } else {
-          // Classify active, Scholar inactive
           if (scholarBtn) {
             scholarBtn.className =
               "text-lg font-medium text-gray-600 hover:text-blue-600 transition-colors";
@@ -365,7 +355,7 @@
           }
         }
 
-        // Update placeholders
+        
         const placeholder =
           mode === "search"
             ? "Search publications..."
@@ -373,7 +363,7 @@
         if (mainInput) mainInput.placeholder = placeholder;
         if (headerInput) headerInput.placeholder = placeholder;
 
-        // Update description text on main page
+        
         if (descriptionEl) {
           descriptionEl.textContent =
             mode === "search"
@@ -381,7 +371,7 @@
               : "Classify text into categories like business, health, politics.";
         }
 
-        // Update form actions
+        
         if (mode === "classify") {
           if (mainForm) mainForm.action = "#";
           if (headerForm) headerForm.action = "#";
@@ -390,33 +380,33 @@
           if (headerForm) headerForm.action = "/search";
         }
 
-        // Update logo text
+        
         const logoText = document.querySelector(".scholar");
         if (logoText) {
           logoText.textContent = mode === "search" ? "Scholar" : "Classify";
         }
       }
 
-      // Handle form submissions for classify mode
+      
       function handleClassifySubmission(form, input) {
         if (currentMode === "classify") {
           event.preventDefault();
           const text = input.value.trim();
           if (!text) return;
 
-          // Determine which results container to use
+          
           let resultsContainer =
             document.getElementById("results-container") ||
             document.getElementById("main-results-container");
 
-          // Show loading state
+          
           if (resultsContainer) {
             resultsContainer.innerHTML =
               '<div class="text-center py-8"><div class="text-lg text-gray-700">Classifying...</div></div>';
             resultsContainer.classList.remove("hidden");
           }
 
-          // Make classify request
+          
           fetch("/classify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -426,7 +416,7 @@
             .then((data) => {
               if (resultsContainer) {
                 if (data.predicted_category) {
-                  // Google Scholar style result
+                  
                   let scoresHtml = "";
                   if (data.prediction_scores) {
                     scoresHtml =
@@ -495,12 +485,9 @@
         }
       }
 
-      // Initialize when DOM is loaded
       document.addEventListener("DOMContentLoaded", () => {
-        // Start in search mode
         setMode("search");
 
-        // Add event listeners for main page buttons
         const scholarBtn = document.getElementById("scholar-mode-btn");
         const classifyBtn = document.getElementById("classify-mode-btn");
 
@@ -512,7 +499,6 @@
           classifyBtn.addEventListener("click", () => setMode("classify"));
         }
 
-        // Add event listeners for header buttons
         const scholarHeaderBtn = document.getElementById(
           "scholar-mode-header-btn"
         );
@@ -530,7 +516,6 @@
           );
         }
 
-        // Add form submission handlers
         const mainForm = document.getElementById("main-search-form");
         const headerForm = document.getElementById("header-search-form");
         const mainInput = document.getElementById("main-input");
