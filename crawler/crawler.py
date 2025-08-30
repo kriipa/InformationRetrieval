@@ -93,7 +93,6 @@ async def scrape():
             if 'browser' in locals():
                 await browser.close()
 
-        # Save results
         with open('../data/publications_data.json', 'w') as f:
             json.dump(all_publications_data, f, indent=4)
         print("Data saved to publications_data.json")
@@ -102,7 +101,6 @@ def run_scrape():
     asyncio.run(scrape())
 
 if __name__ == "__main__":
-    # Schedule to run every day at 2am, or call run_scrape() on demand
     schedule.every().day.at("02:00").do(run_scrape)
     print("Scheduler started. Press Ctrl+C to exit.")
     while True:

@@ -30,7 +30,7 @@ def load_data_from_csv_files(base_path):
                 print(f"Error reading {filename}: {e}")
     return documents, labels
 
-def train_classifier(data_path='../data1/'):
+def train_classifier(data_path='../data/'):
     X, y = load_data_from_csv_files(data_path)
     pipeline = Pipeline([
         ('vectorizer', TfidfVectorizer(stop_words='english')),
@@ -39,8 +39,7 @@ def train_classifier(data_path='../data1/'):
     pipeline.fit(X, y)
     return pipeline
 
-def get_or_train_classifier(data_path='../data1/'):
-    # Try to load model from disk
+def get_or_train_classifier(data_path='../data/'):
     if os.path.exists(MODEL_PATH):
         print("Loading classifier model from disk...")
         return joblib.load(MODEL_PATH)
