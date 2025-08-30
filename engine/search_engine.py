@@ -111,7 +111,7 @@ class SimpleSearchEngine:
             for token in set(tokens):
                 index[token].append(doc_id)
         self.inverted_index = dict(index)
-        print("✅ Weighted inverted index built.")
+        print("Weighted inverted index built.")
 
     def build(self, force_rebuild=False):
         index_path = './data/inverted_index.json'
@@ -120,13 +120,13 @@ class SimpleSearchEngine:
             print(f"Loading inverted index from {index_path}...")
             with open(index_path, 'r') as f:
                 self.inverted_index = json.load(f)
-            print("✅ Inverted index loaded.")
+            print("Inverted index loaded.")
         else:
             self._build_index()
             print(f"Saving inverted index to {index_path}...")
             with open(index_path, 'w') as f:
                 json.dump(self.inverted_index, f, indent=4)
-            print("✅ Inverted index saved.")
+            print("Inverted index saved.")
 
     def search(self, query):
         if self.inverted_index is None:
